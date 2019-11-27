@@ -48,6 +48,7 @@ function parseHash() {
 
 const params = parseHash();
 const NODES = params.nodes || 10000;
+let addAmt = 1;
 
 function init() {
   // Create virtual scroller items.
@@ -60,6 +61,81 @@ function init() {
     node.querySelector('.message').innerHTML = random(MESSAGES);
     node.querySelector('.media').innerHTML = random(PICTURES);
     scroller.appendChild(node);
+  }
+
+  if (params.test) {
+    let panel = document.createElement('div');
+    panel.classList.add('panel');
+    let info = document.createElement('p');
+    info.textContent = NODES + ' nodes';
+    panel.appendChild(info);
+    let commentBtn = document.createElement('button');
+    commentBtn.textContent = 'Add comments';
+    commentBtn.onclick = function() {
+      if (addAmt < 1000)
+        addAmt *= 10;
+      requestAnimationFrame((ts1) => {
+        for (let i = 0; i < addAmt; i++) {
+          let character = random(CHARACTERS);
+          let node = document.querySelector('#templates > .comment').cloneNode(true);
+          node.querySelector('.avatar').style.backgroundImage = 'url(' + character.avatar + ')';
+          node.querySelector('.name').textContent = character.name;
+          node.querySelector('.message').innerHTML = random(MESSAGES);
+          random(scroller.children).querySelector('.comments').appendChild(node);
+        }
+        requestAnimationFrame((ts2) => {
+          info.textContent = addAmt + ' comments (' + Math.round(ts2 - ts1) + 'ms)';
+        });
+      });
+    };
+    panel.appendChild(commentBtn);
+    let scrollBtn = document.createElement('button');
+    scrollBtn.textContent = 'Test scroll';
+    scrollBtn.onclick = function() {
+      let scrollElem = document.scrollingElement;
+      let target = 0;
+      if (scrollElem.scrollTop < scrollElem.scrollHeight / 2)
+        target = scrollElem.scrollHeight;
+      scrollElem.scrollTo({
+        top: target,
+        left: 0,
+        behavior: 'smooth',
+      });
+      requestAnimationFrame((firstTime) => {
+        let stillAmt = 0;
+        let lastPos = scrollElem.scrollTop;
+        let lastTime = firstTime;
+        let frames = 0;
+        let measure = function(ts) {
+          ++frames;
+          lastTime = ts;
+          if (lastPos == scrollElem.scrollTop)
+            stillAmt++;
+          else
+            stillAmt = 0;
+          lastPos = scrollElem.scrollTop;
+          if (stillAmt < 3) {
+            requestAnimationFrame(measure);
+          } else {
+            info.textContent = frames + ' frames (' + Math.round(frames / ((ts - firstTime) / 1000))+ ' fps)';
+          }
+        };
+        requestAnimationFrame(measure);
+      });
+    };
+    panel.appendChild(scrollBtn);
+    let resizeBtn = document.createElement('button');
+    resizeBtn.textContent = 'Resize';
+    resizeBtn.onclick = function() {
+      requestAnimationFrame((ts1) => {
+        scroller.classList.toggle('wide');
+        requestAnimationFrame((ts2) => {
+          info.textContent = Math.round(ts2 - ts1) + 'ms resize';
+        });
+      });
+    };
+    panel.appendChild(resizeBtn);
+    document.body.appendChild(panel);
   }
   // uncomment to test scrolling.
   // test();

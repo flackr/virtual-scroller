@@ -14,12 +14,24 @@ body {
   vertical-align: middle;
   height: 40px;
 }
+.comment .name-container {
+  display: inline;
+  height: auto;
+}
+.comment .name {
+  color: blue;
+  font-weight: bold;
+}
+.comment .name-container > * {
+  display: inline-block;
+}
 .post {
   min-height: 100px;
   background: white;
   border-radius: 2px;
   border: 1px solid gray;
-  margin: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 .media {
   background:#333;
@@ -37,10 +49,17 @@ body {
   display: none;
 }
 .stream {
-  min-width: 500px;
-  max-width: 720px;
-  width: 50%;
+  width: 500px;
   margin-left: auto;
   margin-right: auto;
 }
-
+.stream.wide {
+  width: 1000px;
+}
+.panel {
+  position: fixed;
+  left: 10px;
+  top: 30%;
+  background: white;
+  border: 2px solid gray;
+}
