@@ -274,7 +274,10 @@ export class VisibilityManager {
             // of the container to account for the items which are hidden.
             this.#container.style.paddingTop = (newBounds.low * average) + 'px';
             this.#container.style.paddingBottom = ((this.#elements.length - newBounds.high - 1) * average) + 'px';
-            this.#scroller.scrollTop = previousScroll + scrollAdjustment;
+
+            // Scroll anchoring may have already adjusted the scroll offset, so
+            // scroll by the difference from the current scroll top.
+            this.#scroller.scrollBy(0, previousScroll + scrollAdjustment - this.#scroller.scrollTop);
             this.#revealedRange = newBounds;
           }
           this.scheduleSync();
