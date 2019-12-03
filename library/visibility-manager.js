@@ -433,7 +433,8 @@ export class VisibilityManager {
           element.classList.add('hidden');
         } else {
           const size = this.#sizeManager.getHopefulSize(element);
-          element.setAttribute('rendersubtree', 'invisible activatable');
+          element.setAttribute('rendersubtree',
+                               'invisible skip-viewport-activation');
           element.style.intrinsicSize = `${LOCKED_WIDTH_PX}px ${size}px`;
         }
       }
