@@ -203,6 +203,12 @@ export class VisibilityManager {
           return;
         }
 
+        // Don't measure if the container is locked or not displayed.
+        if (getComputedStyle(this.#container).display == 'none' ||
+            this.#container.hasAttribute('rendersubtree')) {
+          return;
+        }
+
         // The basic idea is ...
         // The forced layout occurs at the start. We then use the laid out
         // coordinates (which are based on a mix of real sizes for

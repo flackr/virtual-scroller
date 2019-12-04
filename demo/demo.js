@@ -26,7 +26,7 @@ const PICTURES = [
   '<img src="images/pics/coffee.jpg" width="500px" height="500px">',
   '<img src="images/pics/gorge.jpg" width="500px" height="281px">',
   '<img src="images/pics/night.jpg" width="500px" height="375px">',
-  '<video src="images/pics/cat.webm" width="360px" height="640px" onclick="this.play();">',
+  '<video src="images/pics/cat.webm" width="360px" height="640px" onclick="this.play(); arguments[0].stopPropagation();">',
 ];
 
 document.addEventListener('DOMContentLoaded', init);
@@ -37,7 +37,7 @@ function random(list) {
 
 function parseHash() {
   let result = {};
-  let params = location.hash.substring(1).split('&');
+  let params = location.search.substring(1).split('&');
   for (let i = 0; i < params.length; i++) {
     let values = params[i].split('=');
     if (values.length == 2)
@@ -47,10 +47,70 @@ function parseHash() {
 }
 
 const params = parseHash();
-const NODES = params.nodes || 10000;
+const NODES = params.nodes || 1000;
+const USE_FALLBACK = !getComputedStyle(document.body).intrinsicSize;
 let addAmt = 1;
+let savedScroll;
+
+function hide(node) {
+  if (USE_FALLBACK) {
+    node.style.display = 'none';
+  } else {
+    node.style.intrinsicSize = '0px 0px';
+    node.setAttribute('rendersubtree', 'invisible');
+  }
+}
+
+function show(node) {
+  if (USE_FALLBACK) {
+    node.style.display = '';
+  } else {
+    node.style.intrinsicSize = '';
+    node.removeAttribute('rendersubtree');
+  }
+}
+
+function getScroller(node) {
+  while (node && node != document.scrollingElement && getComputedStyle(node).overflow == 'visible')
+    node = node.parentElement;
+  return node;
+}
+
+function showDetails(node) {
+  requestAnimationFrame((ts1) => {
+    let scroller = document.querySelector('.stream');
+    let details = document.getElementById('details-view');
+    details.classList.add('visible');
+    let scrollingElement = getScroller(scroller);
+    savedScroll = scrollingElement.scrollTop;
+    hide(scroller);
+    scrollingElement.scrollTop = 0;
+    details.querySelector('.content').innerHTML = node.innerHTML;
+    requestAnimationFrame((ts2) => {
+      let log = document.querySelector('#log');
+      if (log)
+        log.textContent = 'Switched in ' + Math.round(ts2 - ts1) + 'ms';
+    });
+  });
+}
+
+function hideDetails() {
+  requestAnimationFrame((ts1) => {
+    let scroller = document.querySelector('.stream');
+    let details = document.getElementById('details-view');
+    show(scroller);
+    getScroller(scroller).scrollTop = savedScroll;
+    details.classList.remove('visible');
+    requestAnimationFrame((ts2) => {
+      let log = document.querySelector('#log');
+      if (log)
+        log.textContent = 'Switched in ' + Math.round(ts2 - ts1) + 'ms';
+    });
+  });
+}
 
 function init() {
+  document.querySelector('#back').addEventListener('click', hideDetails);
   // Create virtual scroller items.
   let scroller = document.querySelector('.stream');
   for (let i = 0; i < NODES; i++) {
@@ -61,12 +121,17 @@ function init() {
     node.querySelector('.message').innerHTML = random(MESSAGES);
     node.querySelector('.media').innerHTML = random(PICTURES);
     scroller.appendChild(node);
+    node.addEventListener('click', function(evt) {
+      showDetails(node);
+      evt.stopPropagation();
+    });
   }
 
   if (params.test) {
     let panel = document.createElement('div');
     panel.classList.add('panel');
     let info = document.createElement('p');
+    info.setAttribute('id', 'log');
     info.textContent = NODES + ' nodes';
     panel.appendChild(info);
     let commentBtn = document.createElement('button');

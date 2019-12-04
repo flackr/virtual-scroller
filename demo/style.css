@@ -63,3 +63,14 @@ body {
   background: white;
   border: 2px solid gray;
 }
+#details-view {
+  display: none;
+  margin: 50px;
+  background: white;
+  border-radius: 25px;
+  padding: 25px;
+  overflow: hidden;
+}
+#details-view.visible {
+  display: block;
+}
