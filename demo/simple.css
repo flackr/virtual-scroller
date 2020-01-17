@@ -1,0 +1,4 @@
+.post {
+  render-subtree: invisible;
+  min-height: 50px;
+}
