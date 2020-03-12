@@ -26,6 +26,12 @@ function styleSheetFactory() {
 ::slotted(.hidden) {
   display: none !important;
 }
+@supports (subtree-visibility: hidden) {
+  ::slotted(.hidden) {
+    display: block !important;
+    subtree-visibility: hidden;
+  }
+}
 `);
     }
     return styleSheet;

@@ -83,7 +83,7 @@ class ElementBounds {
 }
 
 const EMPTY_ELEMENT_BOUNDS = new ElementBounds([], -1, -1);
-const USE_FALLBACK = !getComputedStyle(document.body).intrinsicSize;
+const USE_FALLBACK = !getComputedStyle(document.body).subtreeVisibility;
 
 /**
  * Manages measuring and estimating sizes of elements.
@@ -204,8 +204,9 @@ export class VisibilityManager {
         }
 
         // Don't measure if the container is locked or not displayed.
-        if (getComputedStyle(this.#container).display == 'none' ||
-            this.#container.hasAttribute('rendersubtree')) {
+        const containerComputedStyle = getComputedStyle(this.#container);
+        if (containerComputedStyle.display == 'none' ||
+            containerComputedStyle.subtreeVisibility == 'hidden') {
           return;
         }
 
@@ -276,7 +277,7 @@ export class VisibilityManager {
             // Account for average size change
             scrollAdjustment += (average - previousAverage) * newBounds.low;
 
-            // If we're not using render-subtree we need to adjust the padding
+            // If we're not using subtree-visibility we need to adjust the padding
             // of the container to account for the items which are hidden.
             this.#container.style.paddingTop = (newBounds.low * average) + 'px';
             this.#container.style.paddingBottom = ((this.#elements.length - newBounds.high - 1) * average) + 'px';
@@ -419,12 +420,7 @@ export class VisibilityManager {
    */
   #unlock =
       element => {
-        if (USE_FALLBACK) {
-          element.classList.remove('hidden');
-        } else {
-          element.removeAttribute('rendersubtree');
-          element.style.intrinsicSize = '';
-        }
+        element.classList.remove('hidden');
       }
 
   /**
@@ -435,14 +431,11 @@ export class VisibilityManager {
   #hide =
       element => {
         this.#revealed.delete(element);
-        if (USE_FALLBACK) {
-          element.classList.add('hidden');
-        } else {
+        if (!USE_FALLBACK) {
           const size = this.#sizeManager.getHopefulSize(element);
-          element.setAttribute('rendersubtree',
-                               'invisible skip-viewport-activation');
-          element.style.intrinsicSize = `${LOCKED_WIDTH_PX}px ${size}px`;
+          element.style.containIntrinsicSize = `${LOCKED_WIDTH_PX}px ${size}px`;
         }
+        element.classList.add('hidden');
       }
 
   /**

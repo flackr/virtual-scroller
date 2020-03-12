@@ -1,4 +1,5 @@
 .post {
-  render-subtree: invisible;
+  subtree-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
   min-height: 50px;
 }

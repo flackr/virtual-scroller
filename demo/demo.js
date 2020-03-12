@@ -17,7 +17,7 @@ const CHARACTERS = [
 ];
 
 const MESSAGES = [
-  'Did you know that long flowing text can be hard to deal with in a scroller which can change sizes? This is because text wrapping is not trivial and any time the container size changes the text may wrap to any number of lines as a result. This represents non-trivial complexity when performing layout on long flowing feeds. When you have a lot of posts with long text like this it can be expensive to do a full layout. By using the render-subtree property we avoid doing the expensive layout work for this offscreen content.',
+  'Did you know that long flowing text can be hard to deal with in a scroller which can change sizes? This is because text wrapping is not trivial and any time the container size changes the text may wrap to any number of lines as a result. This represents non-trivial complexity when performing layout on long flowing feeds. When you have a lot of posts with long text like this it can be expensive to do a full layout. By using the subtree-visibility property we avoid doing the expensive layout work for this offscreen content.',
   'A typical short post.',
   'This is a medium-length post containing some special formatting such as a <a href="https://en.wikipedia.org/wiki/Hashtag">#link</a>',
 ];
