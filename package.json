@@ -1,0 +1,17 @@
+{
+  "name": "virtual-scroller",
+  "version": "0.0.1",
+  "description": "A component capable of scrolling a large number of elements by only processing visible ones.",
+  "respository": "",
+  "scripts": {
+    "build": "webpack --mode production"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.9.0",
+    "babel-loader": "^8.1.0",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}

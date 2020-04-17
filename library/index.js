@@ -13,8 +13,9 @@ function styleSheetFactory() {
   let styleSheet;
   return () => {
     if (!styleSheet) {
-      styleSheet = new CSSStyleSheet();
-      styleSheet.replaceSync(`
+      styleSheet = document.createElement('style');
+      styleSheet.type = 'text/css';
+      styleSheet.textContent = `
 :host {
   display: block;
 }
@@ -32,7 +33,7 @@ function styleSheetFactory() {
     subtree-visibility: hidden;
   }
 }
-`);
+`;
     }
     return styleSheet;
   };

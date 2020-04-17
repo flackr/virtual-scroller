@@ -1,5 +1,3 @@
-import '../library/index.js';
-
 const CHARACTERS = [
   {'name': 'Tom', 'avatar': 'images/avatars/cat1.jpg'},
   {'name': 'Harry', 'avatar': 'images/avatars/cat2.jpg'},
