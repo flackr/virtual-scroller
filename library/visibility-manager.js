@@ -83,7 +83,7 @@ class ElementBounds {
 }
 
 const EMPTY_ELEMENT_BOUNDS = new ElementBounds([], -1, -1);
-const USE_FALLBACK = !getComputedStyle(document.body).subtreeVisibility;
+const USE_FALLBACK = !getComputedStyle(document.createElement('div')).subtreeVisibility;
 
 /**
  * Manages measuring and estimating sizes of elements.
